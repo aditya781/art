@@ -10,8 +10,8 @@ import { HomeHeader } from '@/components/home/home-header';
 import { NewDrawingButton } from '@/components/home/new-drawing-button';
 import { NewDrawingSheet } from '@/components/home/new-drawing-sheet';
 import { ProjectCard } from '@/components/home/project-card';
-import { PrivacySheet } from '@/components/home/privacy-sheet';
-import { SettingsSheet } from '@/components/home/settings-sheet';
+import { PrivacyPage } from '@/components/home/privacy-page';
+import { SideMenu } from '@/components/home/side-menu';
 import { RenameSheet } from '@/components/home/rename-sheet';
 import { Welcome } from '@/components/home/welcome';
 import { AppText } from '@/components/ui/app-text';
@@ -28,7 +28,7 @@ import { toast, toastError } from '@/store/toast';
 
 type Kind = Project['kind'];
 type Filter = 'all' | Kind;
-type Dialog = { type: 'new' | 'settings' | 'privacy' } | { type: 'source'; kind: Kind } | { type: 'menu' | 'rename' | 'delete'; project: Project };
+type Dialog = { type: 'new' | 'drawer' } | { type: 'privacy'; from: 'drawer' | 'home' } | { type: 'source'; kind: Kind } | { type: 'menu' | 'rename' | 'delete'; project: Project };
 
 const GAP = space.md;
 
@@ -93,7 +93,7 @@ export default function HomeScreen() {
       <HomeHeader
         subtitle={latest ? `${sorted.length} ${sorted.length === 1 ? 'drawing' : 'drawings'}` : 'Drawing aid for artists'}
         sidePadding={pad}
-        onSettings={() => setDialog({ type: 'settings' })}
+        onMenu={() => setDialog({ type: 'drawer' })}
       />
       <ScrollView
         contentContainerStyle={{
@@ -147,7 +147,7 @@ export default function HomeScreen() {
         ) : (
           // First time: say what the app is for and offer one clear way in.
           <View style={[styles.content, { maxWidth: MaxContentWidth - pad * 2 }]}>
-            <Welcome wide={wide} onStart={(kind) => setDialog({ type: 'source', kind })} onPrivacy={() => setDialog({ type: 'privacy' })} />
+            <Welcome wide={wide} onStart={(kind) => setDialog({ type: 'source', kind })} onPrivacy={() => setDialog({ type: 'privacy', from: 'home' })} />
           </View>
         )}
       </ScrollView>
@@ -155,12 +155,14 @@ export default function HomeScreen() {
       {latest && <NewDrawingButton onPress={() => setDialog({ type: 'new' })} />}
 
       <NewDrawingSheet visible={dialog?.type === 'new'} onClose={close} onStart={start} />
-      <SettingsSheet
-        visible={dialog?.type === 'settings'}
+      {/* The policy opens over the menu it was reached from, and going back returns there. */}
+      <SideMenu
+        visible={dialog?.type === 'drawer' || (dialog?.type === 'privacy' && dialog.from === 'drawer')}
+        covered={dialog?.type === 'privacy'}
         onClose={close}
-        onPrivacy={() => setDialog({ type: 'privacy' })}
+        onPrivacy={() => setDialog({ type: 'privacy', from: 'drawer' })}
       />
-      <PrivacySheet visible={dialog?.type === 'privacy'} onClose={close} />
+      <PrivacyPage visible={dialog?.type === 'privacy'} onClose={() => setDialog(dialog?.type === 'privacy' && dialog.from === 'drawer' ? { type: 'drawer' } : null)} />
 
       <SourceSheet
         visible={dialog?.type === 'source' && dialog.kind === 'grid'}
