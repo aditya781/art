@@ -23,14 +23,12 @@
         "monochromeImage": "./assets/images/adaptive-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": [
+      "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
-        "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
         "android.permission.READ_MEDIA_IMAGES",
         "android.permission.READ_MEDIA_VIDEO",
-        "android.permission.READ_MEDIA_AUDIO"
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
       ]
     },
     "web": {
@@ -53,14 +51,16 @@
         "expo-image-picker",
         {
           "photosPermission": "GridSketch needs your photos so you can pick a reference image.",
-          "cameraPermission": "GridSketch uses the camera to photograph your reference or your doodles."
+          "cameraPermission": "GridSketch uses the camera to photograph your reference or your doodles.",
+          "microphonePermission": false
         }
       ],
       [
         "expo-media-library",
         {
           "photosPermission": "GridSketch saves exported images to your photo library.",
-          "savePhotosPermission": "GridSketch saves exported images to your photo library."
+          "savePhotosPermission": "GridSketch saves exported images to your photo library.",
+          "granularPermissions": []
         }
       ],
       "expo-sharing",

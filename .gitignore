@@ -41,3 +41,6 @@ example
 # generated native folders
 /ios
 /android
+
+# Copied in by the postinstall script (setup-skia-web); only the web build uses it
+public/canvaskit.wasm
